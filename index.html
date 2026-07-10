@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Wizzard Clicker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="login-screen" class="login-screen">
+    <div class="login-panel">
+      <h1 class="login-title">🧙 Wizzard Clicker</h1>
+      <p class="login-subtitle">Choose your wizard to begin</p>
+
+      <div id="profile-list" class="profile-list"></div>
+
+      <div class="login-divider"><span>or start a new journey</span></div>
+
+      <form id="login-form" class="login-form">
+        <input id="username-input" type="text" placeholder="Enter a username" maxlength="20" autocomplete="off" />
+        <button type="submit" class="admin-btn">Create &amp; Play</button>
+      </form>
+      <div id="login-error" class="login-error"></div>
+    </div>
+  </div>
+
+  <div class="stars" aria-hidden="true"></div>
+
+  <main class="game">
+    <header class="game-header">
+      <div class="header-top">
+        <h1 class="title">Wizzard Clicker</h1>
+        <button id="settings-btn" class="icon-btn" aria-label="Settings">⚙️</button>
+      </div>
+      <button id="user-badge" class="user-badge" aria-label="Switch wizard">👤 <span id="current-username">Wizard</span></button>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-label">Mana</span>
+          <span id="mana" class="stat-value">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Mana/sec</span>
+          <span id="mps" class="stat-value">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Mana/click</span>
+          <span id="mpc" class="stat-value">1</span>
+        </div>
+        <div class="stat prestige-stat hidden" id="shards-stat">
+          <span class="stat-label">Arcane Shards</span>
+          <span id="shards" class="stat-value">0</span>
+        </div>
+        <div class="stat prestige-stat hidden" id="rebirths-stat">
+          <span class="stat-label">Rebirths</span>
+          <span id="rebirths" class="stat-value">0</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="clicker-area">
+      <div id="combo-bar" class="combo-bar hidden">
+        <span id="combo-text">Combo x1</span>
+        <div id="combo-fill" class="combo-fill"></div>
+      </div>
+      <button id="wizard" class="wizard" aria-label="Cast spell to gain mana">
+        <div class="hat"></div>
+        <div class="beard"></div>
+        <div class="staff">🪄</div>
+        <div class="glow"></div>
+      </button>
+      <p class="hint">Click the wizard to cast spells</p>
+    </section>
+
+    <section class="shop">
+      <h2>Spell Shop</h2>
+      <ul id="upgrade-list" class="upgrade-list"></ul>
+    </section>
+  </main>
+
+  <div id="floating-text-container"></div>
+
+  <div id="event-toast" class="event-toast hidden">
+    <div class="event-title" id="event-title"></div>
+    <div class="event-desc" id="event-desc"></div>
+    <div id="event-timer" class="event-timer"></div>
+  </div>
+
+  <div id="achievement-toast" class="achievement-toast hidden">
+    <div class="achievement-icon" id="achievement-icon">🏆</div>
+    <div class="achievement-info">
+      <div class="achievement-title" id="achievement-title">Achievement Unlocked</div>
+      <div class="achievement-desc" id="achievement-desc"></div>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="confirm-modal hidden">
+    <div class="confirm-panel">
+      <h3>Reset Progress?</h3>
+      <p>Are you sure? This will erase all your mana, upgrades, and progress. It cannot be undone.</p>
+      <div class="confirm-actions">
+        <button id="cancel-reset" class="secondary-btn">Cancel</button>
+        <button id="confirm-reset" class="danger-btn">Reset Progress</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="settings-panel" class="settings-panel hidden">
+    <div class="settings-header">
+      <h2>Settings</h2>
+      <button id="close-settings" class="icon-btn" aria-label="Close settings">✕</button>
+    </div>
+    <div class="setting-row">
+      <label for="sfx-volume">SFX Volume</label>
+      <input id="sfx-volume" type="range" min="0" max="100" value="50" />
+    </div>
+    <div class="setting-row">
+      <label for="music-volume">Music Volume</label>
+      <input id="music-volume" type="range" min="0" max="100" value="30" />
+    </div>
+    <div class="setting-row">
+      <label for="mute-toggle">Mute All</label>
+      <button id="mute-toggle" class="toggle-btn">Off</button>
+    </div>
+    <div class="setting-row">
+      <label for="events-toggle">Random Events</label>
+      <button id="events-toggle" class="toggle-btn">On</button>
+    </div>
+    <div class="setting-row">
+      <button id="reset-save" class="danger-btn">Reset Game</button>
+    </div>
+    <div class="setting-row">
+      <button id="achievements-btn" class="secondary-btn">Achievements</button>
+    </div>
+    <div class="setting-row">
+      <button id="skins-btn" class="secondary-btn">Wizard Skins</button>
+    </div>
+    <div class="setting-row">
+      <button id="saves-btn" class="secondary-btn">Save Slots</button>
+    </div>
+    <div class="setting-row">
+      <button id="leaderboard-btn" class="secondary-btn">Leaderboard</button>
+    </div>
+    <div class="setting-row">
+      <button id="switch-user-btn" class="secondary-btn">Switch Wizard</button>
+    </div>
+    <div class="secret-code">
+      <label for="secret-input">Admin Code</label>
+      <input id="secret-input" type="text" placeholder="Enter secret code..." autocomplete="off" />
+      <div id="secret-hint" class="secret-hint">Wrong code.</div>
+    </div>
+  </div>
+
+  <div id="admin-panel" class="admin-panel hidden">
+    <div class="admin-header">
+      <h2>🛡️ Admin Panel</h2>
+      <button id="close-admin" class="icon-btn" aria-label="Close admin panel">✕</button>
+    </div>
+    <div class="admin-grid">
+      <button id="admin-mana" class="admin-btn">+10,000 Mana</button>
+      <button id="admin-clicks" class="admin-btn">Set Clicks to 100</button>
+      <button id="admin-max" class="admin-btn">Max All Upgrades</button>
+      <button id="admin-shards" class="admin-btn">+100 Arcane Shards</button>
+      <button id="admin-storm" class="admin-btn">Trigger Mana Storm</button>
+      <button id="admin-dark" class="admin-btn">Trigger Dark Pact</button>
+      <button id="admin-treasure" class="admin-btn">Trigger Treasure Horde</button>
+      <button id="admin-random" class="admin-btn">Trigger Random Event</button>
+      <button id="admin-god" class="admin-btn">Toggle God Mode</button>
+      <button id="admin-reset" class="admin-btn danger">Reset Game</button>
+    </div>
+  </div>
+
+  <div id="achievements-panel" class="achievements-panel hidden">
+    <div class="panel-header">
+      <h2>🏆 Achievements</h2>
+      <button id="close-achievements" class="icon-btn" aria-label="Close achievements">✕</button>
+    </div>
+    <div id="achievements-list" class="achievements-list"></div>
+  </div>
+
+  <div id="skins-panel" class="skins-panel hidden">
+    <div class="panel-header">
+      <h2>🎨 Wizard Skins</h2>
+      <button id="close-skins" class="icon-btn" aria-label="Close skins">✕</button>
+    </div>
+    <div id="skins-list" class="skins-list"></div>
+  </div>
+
+  <div id="saves-panel" class="saves-panel hidden">
+    <div class="panel-header">
+      <h2>💾 Save Slots</h2>
+      <button id="close-saves" class="icon-btn" aria-label="Close saves">✕</button>
+    </div>
+    <div class="save-tabs" id="save-tabs"></div>
+    <div class="save-actions">
+      <button id="save-current" class="admin-btn">Save Current to Slot</button>
+      <button id="load-save" class="admin-btn">Load Slot</button>
+      <button id="export-save" class="admin-btn">Export Slot</button>
+      <button id="import-save" class="admin-btn">Import to Slot</button>
+      <button id="delete-save" class="admin-btn danger">Delete Slot</button>
+    </div>
+    <textarea id="save-json" class="save-json" placeholder="Paste save data here..." readonly></textarea>
+  </div>
+
+  <div id="leaderboard-panel" class="leaderboard-panel hidden">
+    <div class="panel-header">
+      <h2>🏅 Leaderboard</h2>
+      <button id="close-leaderboard" class="icon-btn" aria-label="Close leaderboard">✕</button>
+    </div>
+    <div id="leaderboard-list" class="leaderboard-list"></div>
+  </div>
+
+  <div id="prestige-panel" class="prestige-panel hidden">
+    <div class="panel-header">
+      <h2>✨ Rebirth</h2>
+      <button id="close-prestige" class="icon-btn" aria-label="Close prestige">✕</button>
+    </div>
+    <div class="prestige-info">
+      <p>Rebirth resets your mana and upgrades but grants Arcane Shards to unlock permanent perks.</p>
+      <p>Current prestige: <strong id="prestige-bonus">+0% mana/sec</strong></p>
+      <p>Shards gained on rebirth: <strong id="prestige-gain">0</strong></p>
+      <button id="confirm-prestige" class="admin-btn danger">Rebirth Now</button>
+    </div>
+    <h3>Ascension Perks</h3>
+    <div id="perks-list" class="perks-list"></div>
+  </div>
+
+  <button id="prestige-btn" class="prestige-fab hidden">✨ Rebirth</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
